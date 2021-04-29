@@ -60,11 +60,9 @@ class UsuariosController extends Controller
         $contra=  DB::table('Usuarios')->where('Pass', $usuarios['Pass'])->first();
         if (!$email || !$contra) {
             return view('ingresar', ['mensaje'=>'Email o Contraseña incorrecta']);
-        }
-        $nomEmail=$email['nombre'];
-        $nombre= DB::select('select Nombre from usuarios where Nombre= ?', [$nomEmail]);
-        dd($nombre);
-        //return view('ingresar', ['bienvenido'=>'Bienvenido '.$nombre]);
+        }        
+        $nomEmail=$email->Nombre;
+        return view('ingresar', ['bienvenido'=>'Bienvenido '.$nomEmail]);
         
     }
     /**
