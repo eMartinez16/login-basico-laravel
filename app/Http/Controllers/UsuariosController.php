@@ -37,12 +37,36 @@ class UsuariosController extends Controller
     public function store(Request $request)
     {
         $usuarios=$request->all();
-        
+        $email = DB::table('Usuarios')->where('Email', $usuarios['Email'])->first();
+        if(empty($usuarios['Nombre']) || empty($usuarios['Apellido'])) {
+            return view('registrar', ['mensaje'=>'Rellene todos los campos']);
+        }
+        if ($email) {            
+            return view('registrar',['mensaje'=> 'Este email ya ha sido registrado. Inicie sesión.']);       
+        }            
         DB::insert('insert into usuarios values (?,?,?,?, ?)', [NULL, $usuarios['Nombre'], $usuarios['Apellido'], $usuarios['Email'],$usuarios['Pass']]);
-        return 'REGISTRADO '.$usuarios['Nombre'];
-        
+        $mensaje= 'REGISTRADO '.$usuarios['Nombre'];
+        return $mensaje;
+
     }
 
+    // Funcion para validar datos de ingreso
+    public function validarForm(Request $request){
+        $usuarios=$request->all();
+        if(empty($usuarios['Email']) || empty($usuarios['Pass'])){
+            return view('ingresar', ['mensaje'=> 'No deje campos en blanco']);
+        }
+        $email = DB::table('Usuarios')->where('Email', $usuarios['Email'])->first();
+        $contra=  DB::table('Usuarios')->where('Pass', $usuarios['Pass'])->first();
+        if (!$email || !$contra) {
+            return view('ingresar', ['mensaje'=>'Email o Contraseña incorrecta']);
+        }
+        $nomEmail=$email['nombre'];
+        $nombre= DB::select('select Nombre from usuarios where Nombre= ?', [$nomEmail]);
+        dd($nombre);
+        //return view('ingresar', ['bienvenido'=>'Bienvenido '.$nombre]);
+        
+    }
     /**
      * Display the specified resource.
      *

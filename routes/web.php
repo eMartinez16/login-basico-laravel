@@ -26,4 +26,6 @@ Route::get('registrar', function () {
     return view('registrar');
 });
 
-Route::post('registrado', [UsuariosController::class, "store"])->name('registrado');
+Route::post('registrar', [UsuariosController::class, "store"])->name('registrado');
+
+Route::post('ingresar', [UsuariosController::class, "validarForm"])->name('validar');
